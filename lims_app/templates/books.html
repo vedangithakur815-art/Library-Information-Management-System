@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Books - City Library</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar navbar-dark bg-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="/">
+            📚 City Library
+        </a>
+
+
+        <div>
+
+            <a
+                class="btn btn-outline-light me-2"
+                href="/"
+            >
+                Home
+            </a>
+
+
+            <a
+                class="btn btn-light me-2"
+                href="/books/"
+            >
+                Books
+            </a>
+
+
+            <a
+                class="btn btn-warning"
+                href="{% url 'my_bag' %}"
+            >
+                🛍 My Bag
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ================= MAIN CONTAINER ================= -->
+
+<div class="container mt-5">
+
+
+    <!-- PAGE HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h1>
+                📚 Books
+            </h1>
+
+            <p class="text-muted">
+                Search and manage library books
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'add_book' %}"
+            class="btn btn-primary"
+        >
+            + Add New Book
+        </a>
+
+    </div>
+
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <div class="card mb-4">
+
+        <div class="card-body">
+
+            <h4 class="mb-3">
+                🔎 Search Books
+            </h4>
+
+
+            <form
+                method="GET"
+                action="{% url 'books' %}"
+            >
+
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="Enter book title..."
+                        value="{{ query }}"
+                    >
+
+
+                    <button
+                        class="btn btn-primary"
+                        type="submit"
+                    >
+                        Search
+                    </button>
+
+
+                    {% if query %}
+
+                        <a
+                            href="{% url 'books' %}"
+                            class="btn btn-secondary"
+                        >
+                            Clear
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= SEARCH RESULT MESSAGE ================= -->
+
+    {% if query %}
+
+        {% if books %}
+
+            <div class="alert alert-success">
+
+                ✅ Book found:
+                <strong>{{ books|length }}</strong>
+
+                result(s) for
+                <strong>"{{ query }}"</strong>
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-danger">
+
+                ❌ Book Not Available
+
+                <br>
+
+                No book found for:
+                <strong>"{{ query }}"</strong>
+
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+
+
+    <!-- ================= BOOKS TABLE ================= -->
+
+    <div class="card">
+
+        <div class="card-body">
+
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h4 class="mb-0">
+                    All Books
+                </h4>
+
+
+                <span class="badge bg-primary fs-6">
+
+                    Total:
+                    {{ books|length }}
+
+                </span>
+
+            </div>
+
+
+
+            <div class="table-responsive">
+
+
+                <table class="table table-bordered table-hover align-middle">
+
+
+                    <!-- TABLE HEADER -->
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Book Title</th>
+
+                            <th>Author</th>
+
+                            <th>Category</th>
+
+                            <th>ISBN</th>
+
+                            <th>Quantity</th>
+
+                            <th>Available</th>
+
+                            <th>Status</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <!-- TABLE BODY -->
+
+                    <tbody>
+
+
+                        {% for book in books %}
+
+
+                        <tr>
+
+
+                            <!-- NUMBER -->
+
+                            <td>
+
+                                {{ forloop.counter }}
+
+                            </td>
+
+
+
+                            <!-- TITLE -->
+
+                            <td>
+
+                                <strong>
+                                    {{ book.title }}
+                                </strong>
+
+                            </td>
+
+
+
+                            <!-- AUTHOR -->
+
+                            <td>
+
+                                {{ book.author }}
+
+                            </td>
+
+
+
+                            <!-- CATEGORY -->
+
+                            <td>
+
+                                <span class="badge bg-info text-dark">
+
+                                    {{ book.category }}
+
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- ISBN -->
+
+                            <td>
+
+                                {{ book.isbn }}
+
+                            </td>
+
+
+
+                            <!-- QUANTITY -->
+
+                            <td>
+
+                                {{ book.quantity }}
+
+                            </td>
+
+
+
+                            <!-- AVAILABLE -->
+
+                            <td>
+
+                                {{ book.available }}
+
+                            </td>
+
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+
+                                {% if book.available > 0 %}
+
+
+                                    <span class="badge bg-success">
+
+                                        ✓ Available
+
+                                    </span>
+
+
+                                {% else %}
+
+
+                                    <span class="badge bg-danger">
+
+                                        ✕ Not Available
+
+                                    </span>
+
+
+                                {% endif %}
+
+
+                            </td>
+
+
+
+                            <!-- ACTION -->
+
+                            <td>
+
+
+                                {% if book.available > 0 %}
+
+
+                                    <!-- ADD TO MY BAG -->
+
+                                    <a
+                                        href="{% url 'add_to_bag' book.id %}"
+                                        class="btn btn-primary btn-sm mb-1"
+                                    >
+
+                                        🛍 Add to My Bag
+
+                                    </a>
+
+
+                                {% else %}
+
+
+                                    <!-- NOT AVAILABLE -->
+
+                                    <button
+                                        class="btn btn-secondary btn-sm mb-1"
+                                        disabled
+                                    >
+
+                                        Not Available
+
+                                    </button>
+
+
+                                {% endif %}
+
+
+
+                                <!-- EDIT -->
+
+                                <a
+                                    href="{% url 'edit_book' book.id %}"
+                                    class="btn btn-warning btn-sm mb-1"
+                                >
+
+                                    ✏️ Edit
+
+                                </a>
+
+
+
+                                <!-- DELETE -->
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'delete_book' book.id %}"
+                                    style="display:inline;"
+                                >
+
+                                    {% csrf_token %}
+
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger btn-sm mb-1"
+                                        onclick="return confirm('Are you sure you want to delete this book?');"
+                                    >
+
+                                        🗑 Delete
+
+                                    </button>
+
+                                </form>
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                        {% empty %}
+
+
+                        <!-- NO BOOKS -->
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="text-center py-5"
+                            >
+
+                                <h5>
+                                    📚 No Books Found
+                                </h5>
+
+                                <p class="text-muted mb-0">
+
+                                    There are currently no books
+                                    matching your search.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer
+    class="bg-dark text-white text-center mt-5 py-3"
+>
+
+    <p class="mb-0">
+
+        © 2026 City Library |
+        Library Information Management System
+
+    </p>
+
+</footer>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+</body>
+
+</html>
